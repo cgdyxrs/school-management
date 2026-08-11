@@ -30,6 +30,7 @@ function saveData(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
+// API Routes
 app.get('/api/students', (req, res) => res.json(readData().students));
 app.get('/api/teachers', (req, res) => res.json(readData().teachers));
 app.get('/api/results', (req, res) => res.json(readData().results));
@@ -100,7 +101,8 @@ app.put('/api/teachers/:id', (req, res) => {
   } else res.status(404).send('Not found');
 });
 
-app.get('/*', (req, res) => {
+// Use Middleware instead of Wildcard Route (Inaondoa PathError kabisa)
+app.use((req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
