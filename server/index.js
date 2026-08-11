@@ -7,11 +7,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Memory Databases
 let users = [
   { id: 1, email: 'admin@gmail.com', password: '123' }
 ];
-let otpStore = {}; // Inahifadhi OTP kwa muda: { 'user@email.com': '123456' }
+let otpStore = {};
 
 let students = [
   { id: 1, name: 'Juma Hassan', rollNo: '101', class: 'Form 1', section: 'A' }
@@ -26,7 +25,6 @@ let fees = [
   { id: 1, studentId: 1, totalAmount: 500000, paidAmount: 300000, status: 'Incomplete' }
 ];
 
-// Mfumo wa kutuma Email
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -35,7 +33,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// AUTH API
 app.post('/api/register', (req, res) => {
   const { email, password } = req.body;
   const existingUser = users.find(u => u.email === email);
@@ -57,7 +54,6 @@ app.post('/api/login', (req, res) => {
   }
 });
 
-// 1. TUMA OTP KWENYE EMAIL
 app.post('/api/send-otp', async (req, res) => {
   const { email } = req.body;
   const user = users.find(u => u.email === email);
@@ -78,17 +74,16 @@ app.post('/api/send-otp', async (req, res) => {
   try {
     if (!process.env.EMAIL_USER) {
       console.log(`\n[OTP DEBUG] OTP ya ${email} ni: ${otp}\n`);
-      return res.json({ message: `OTP imetumwa kwenye email yako! (Debug OTP: ${otp})` });
+      return res.json({ message: `OTP imetumwa! (Debug OTP: ${otp})` });
     }
     await transporter.sendMail(mailOptions);
     res.json({ message: 'OTP imetumwa kikamilifu kwenye email yako!' });
   } catch (err) {
     console.log(`[OTP DEBUG] OTP ya ${email} ni: ${otp}`);
-    res.json({ message: `OTP imetengenezwa! (Kama email haijafika tumia kodi hii: ${otp})` });
+    res.json({ message: `OTP imetengenezwa! (Kodi: ${otp})` });
   }
 });
 
-// 2. THIBITISHA OTP NA BADILISHA PASSWORD
 app.post('/api/reset-password-otp', (req, res) => {
   const { email, otp, newPassword } = req.body;
   
@@ -103,10 +98,9 @@ app.post('/api/reset-password-otp', (req, res) => {
 
   user.password = newPassword;
   delete otpStore[email];
-  res.json({ message: 'Password imebadilishwa kikamilifu! Unaweza kuingia sasa.' });
+  res.json({ message: 'Password imebadilishwa kikamilifu!' });
 });
 
-// STUDENTS API
 app.get('/api/students', (req, res) => res.json(students));
 app.post('/api/students', (req, res) => {
   const newStudent = { id: Date.now(), ...req.body };
@@ -119,7 +113,6 @@ app.put('/api/students/:id', (req, res) => {
   res.json({ message: 'Updated' });
 });
 
-// TEACHERS API
 app.get('/api/teachers', (req, res) => res.json(teachers));
 app.post('/api/teachers', (req, res) => {
   const newTeacher = { id: Date.now(), ...req.body };
@@ -132,7 +125,6 @@ app.put('/api/teachers/:id', (req, res) => {
   res.json({ message: 'Updated' });
 });
 
-// RESULTS API
 app.get('/api/results', (req, res) => res.json(results));
 app.post('/api/results', (req, res) => {
   const { studentId, subject, marks } = req.body;
@@ -148,7 +140,6 @@ app.post('/api/results', (req, res) => {
   res.json(newResult);
 });
 
-// FEES API
 app.get('/api/fees', (req, res) => res.json(fees));
 app.post('/api/fees', (req, res) => {
   const { studentId, totalAmount, paidAmount } = req.body;
@@ -161,7 +152,6 @@ app.post('/api/fees', (req, res) => {
   res.json(newFee);
 });
 
-// Serve frontend
 app.use(express.static(path.join(__dirname, '../client/dist')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
