@@ -1,242 +1,185 @@
 import React, { useState, useEffect } from 'react';
 
-const API_URL = '';
-
-function App() {
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [user, setUser] = useState({ email: 'anna@shule.com', role: 'TEACHER', token: 'fake' });
-
-  // Auth States
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('TEACHER');
-  const [message, setMessage] = useState('');
-
-  // Student States
+export default function App() {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [stats, setStats] = useState({ totalStudents: 0, totalTeachers: 0, totalClasses: 0, totalFeeCollected: 0 });
   const [students, setStudents] = useState([]);
-  const [studentName, setStudentName] = useState('');
-  const [studentClass, setStudentClass] = useState('Form 1');
-  const [studentAge, setStudentAge] = useState('');
-  const [studentMsg, setStudentMsg] = useState('');
+  const [teachers, setTeachers] = useState([]);
+  const [results, setResults] = useState([]);
+  const [fees, setFees] = useState([]);
 
-  const fetchStudents = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/students`);
-      if (res.ok) {
-        const data = await res.json();
-        setStudents(data);
-      }
-    } catch (err) {
-      console.error('Shida ya kupata wanafunzi:', err);
-    }
-  };
+  // Forms states
+  const [studentForm, setStudentForm] = useState({ name: '', rollNo: '', class: '', section: '' });
+  const [teacherForm, setTeacherForm] = useState({ name: '', subject: '', qualification: '' });
+  const [resultForm, setResultForm] = useState({ studentId: '', subject: '', marks: '' });
+  const [feeForm, setFeeForm] = useState({ studentId: '', totalAmount: '', paidAmount: '' });
 
   useEffect(() => {
-    if (user) {
-      fetchStudents();
-    }
-  }, [user]);
+    fetchStats();
+    fetchStudents();
+    fetchTeachers();
+    fetchResults();
+    fetchFees();
+  }, []);
 
-  const handleLogin = async (e) => {
+  const fetchStats = () => fetch('/api/dashboard/stats').then(r => r.json()).then(setStats);
+  const fetchStudents = () => fetch('/api/students').then(r => r.json()).then(setStudents);
+  const fetchTeachers = () => fetch('/api/teachers').then(r => r.json()).then(setTeachers);
+  const fetchResults = () => fetch('/api/results').then(r => r.json()).then(setResults);
+  const fetchFees = () => fetch('/api/fees').then(r => r.json()).then(setFees);
+
+  const handleAddStudent = (e) => {
     e.preventDefault();
-    setMessage('');
-    try {
-      const res = await fetch(`${API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setUser({ email, role: data.role, token: data.token });
-      } else {
-        setMessage(data.message || 'Kuna tatizo limetokea!');
-      }
-    } catch (err) {
-      setMessage('Imefeli kuunganishwa na Server.');
-    }
+    fetch('/api/students', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(studentForm)
+    }).then(() => { fetchStudents(); fetchStats(); setStudentForm({ name: '', rollNo: '', class: '', section: '' }); });
   };
 
-  const handleRegister = async (e) => {
+  const handleAddTeacher = (e) => {
     e.preventDefault();
-    setMessage('');
-    try {
-      const res = await fetch(`${API_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setMessage('Hongera! Usajili umekamilika. Sasa unaweza kuingia.');
-        setIsRegistering(false);
-        setPassword('');
-      } else {
-        setMessage(data.message || 'Kuna tatizo limetokea!');
-      }
-    } catch (err) {
-      setMessage('Imefeli kuunganishwa na Server.');
-    }
+    fetch('/api/teachers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(teacherForm)
+    }).then(() => { fetchTeachers(); fetchStats(); setTeacherForm({ name: '', subject: '', qualification: '' }); });
   };
 
-  const handleAddStudent = async (e) => {
+  const handleAddResult = (e) => {
     e.preventDefault();
-    setStudentMsg('');
-    try {
-      const res = await fetch(`${API_URL}/api/students`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: studentName, studentClass, age: studentAge })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setStudentMsg('Mwanafunzi ameongezwa kikamilifu!');
-        setStudentName('');
-        setStudentAge('');
-        fetchStudents();
-      } else {
-        setStudentMsg(data.message || 'Imefeli kuongeza mwanafunzi');
-      }
-    } catch (err) {
-      setStudentMsg('Kuna tatizo la mtandao!');
-    }
+    fetch('/api/results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(resultForm)
+    }).then(() => { fetchResults(); setResultForm({ studentId: '', subject: '', marks: '' }); });
   };
 
-  const handleLogout = () => {
-    setUser(null);
-    setEmail('');
-    setPassword('');
-    setMessage('');
+  const handleAddFee = (e) => {
+    e.preventDefault();
+    fetch('/api/fees', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(feeForm)
+    }).then(() => { fetchFees(); fetchStats(); setFeeForm({ studentId: '', totalAmount: '', paidAmount: '' }); });
   };
-
-  if (user) {
-    return (
-      <div style={{ fontFamily: 'sans-serif', padding: '15px', maxWidth: '500px', margin: 'auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#007bff', color: 'white', padding: '10px 15px', borderRadius: '8px' }}>
-          <h3 style={{ margin: 0 }}>🏫 Mfumo wa Shule</h3>
-          <button onClick={handleLogout} style={{ backgroundColor: '#dc3545', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '5px', fontWeight: 'bold' }}>
-            Logout
-          </button>
-        </div>
-
-        <div style={{ backgroundColor: '#e9ecef', padding: '15px', borderRadius: '8px', marginTop: '15px' }}>
-          <h4 style={{ margin: '0 0 5px 0' }}>Karibu, {user.email}! 👋</h4>
-          <p style={{ margin: 0 }}><strong>Wadhifa:</strong> <span style={{ color: '#28a745', fontWeight: 'bold' }}>{user.role}</span></p>
-        </div>
-
-        <div style={{ backgroundColor: '#ffffff', border: '1px solid #ddd', padding: '15px', borderRadius: '8px', marginTop: '15px' }}>
-          <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>➕ Sajili Mwanafunzi Mpya</h4>
-          <form onSubmit={handleAddStudent}>
-            <input 
-              type="text" 
-              placeholder="Jina la Mwanafunzi" 
-              value={studentName} 
-              onChange={(e) => setStudentName(e.target.value)} 
-              required 
-              style={{ width: '100%', padding: '8px', marginBottom: '8px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-            />
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-              <select 
-                value={studentClass} 
-                onChange={(e) => setStudentClass(e.target.value)}
-                style={{ flex: 1, padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-              >
-                <option value="Form 1">Form 1</option>
-                <option value="Form 2">Form 2</option>
-                <option value="Form 3">Form 3</option>
-                <option value="Form 4">Form 4</option>
-              </select>
-              <input 
-                type="number" 
-                placeholder="Umri" 
-                value={studentAge} 
-                onChange={(e) => setStudentAge(e.target.value)} 
-                style={{ width: '80px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-              />
-            </div>
-            <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
-              Hifadhi Mwanafunzi
-            </button>
-          </form>
-          {studentMsg && <p style={{ marginTop: '8px', color: studentMsg.includes('kikamilifu') ? 'green' : 'red', fontSize: '14px', textAlign: 'center' }}>{studentMsg}</p>}
-        </div>
-
-        <div style={{ marginTop: '20px' }}>
-          <h4>📚 Orodha ya Wanafunzi ({students.length})</h4>
-          {students.map((st) => (
-            <div key={st.id} style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#f8f9fa', padding: '10px 15px', borderRadius: '6px', marginBottom: '8px', borderLeft: '4px solid #007bff' }}>
-              <div>
-                <strong>{st.name}</strong>
-                <div style={{ fontSize: '12px', color: '#666' }}>Umri: {st.age} yrs</div>
-              </div>
-              <span style={{ backgroundColor: '#007bff', color: 'white', padding: '4px 8px', borderRadius: '12px', fontSize: '12px', height: 'fit-content' }}>
-                {st.class}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif', maxWidth: '400px', margin: '40px auto', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
-      <h2 style={{ textAlign: 'center', color: '#333' }}>🏫 Mfumo wa Shule</h2>
-      <h4 style={{ textAlign: 'center', color: '#666', marginTop: '-10px' }}>
-        {isRegistering ? 'Sajili Akunti Mpya' : 'Kuingia (Login)'}
-      </h4>
-
-      {isRegistering ? (
-        <form onSubmit={handleRegister}>
-          <div style={{ marginBottom: '10px' }}>
-            <label style={{ fontWeight: 'bold' }}>Jina Kamili:</label><br />
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Anna Juma" style={{ width: '100%', padding: '10px', marginTop: '5px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }} />
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <label style={{ fontWeight: 'bold' }}>Email Address:</label><br />
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="anna@shule.com" style={{ width: '100%', padding: '10px', marginTop: '5px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }} />
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <label style={{ fontWeight: 'bold' }}>Password:</label><br />
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Weka password" style={{ width: '100%', padding: '10px', marginTop: '5px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }} />
-          </div>
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ fontWeight: 'bold' }}>Wadhifa (Role):</label><br />
-            <select value={role} onChange={(e) => setRole(e.target.value)} style={{ width: '100%', padding: '10px', marginTop: '5px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}>
-              <option value="TEACHER">Mwalimu (TEACHER)</option>
-              <option value="ADMIN">Mkuu wa Shule (ADMIN)</option>
-            </select>
-          </div>
-          <button type="submit" style={{ padding: '12px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', width: '100%', fontWeight: 'bold', cursor: 'pointer' }}>
-            Kamilisha Usajili
+    <div style={{ fontFamily: 'sans-serif', padding: '20px', maxWidth: '1000px', margin: 'auto' }}>
+      <h1>🚀 School Management System</h1>
+      
+      {/* Navigation Tabs */}
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+        {['dashboard', 'students', 'teachers', 'results', 'fees'].map(tab => (
+          <button 
+            key={tab} 
+            onClick={() => setActiveTab(tab)}
+            style={{ 
+              padding: '10px 15px', 
+              cursor: 'pointer', 
+              backgroundColor: activeTab === tab ? '#007bff' : '#eee',
+              color: activeTab === tab ? '#fff' : '#000',
+              border: 'none', borderRadius: '5px', textTransform: 'capitalize' 
+            }}
+          >
+            {tab}
           </button>
-        </form>
-      ) : (
-        <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ fontWeight: 'bold' }}>Email Address:</label><br />
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="anna@shule.com" style={{ width: '100%', padding: '10px', marginTop: '5px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }} />
-          </div>
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ fontWeight: 'bold' }}>Password:</label><br />
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="123" style={{ width: '100%', padding: '10px', marginTop: '5px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }} />
-          </div>
-          <button type="submit" style={{ padding: '12px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', width: '100%', fontWeight: 'bold', cursor: 'pointer' }}>
-            Ingia (Login)
-          </button>
-        </form>
-      )}
-
-      <div style={{ textAlign: 'center', marginTop: '15px' }}>
-        <button onClick={() => { setIsRegistering(!isRegistering); setMessage(''); }} style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline', cursor: 'pointer' }}>
-          {isRegistering ? 'Umeshajisajili? Ingia hapa (Login)' : 'Huna akunti? Jisajili hapa (Register)'}
-        </button>
+        ))}
       </div>
 
-      {message && <p style={{ marginTop: '15px', color: message.includes('Hongera') ? 'green' : 'red', fontWeight: 'bold', textAlign: 'center' }}>{message}</p>}
+      {/* DASHBOARD TAB */}
+      {activeTab === 'dashboard' && (
+        <div>
+          <h2>📊 System Overview</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+            <div style={{ padding: '15px', border: '1px solid #ccc', borderRadius: '8px', textAlign: 'center' }}>
+              <h3>Wanafunzi</h3>
+              <p style={{ fontSize: '24px', fontWeight: 'bold' }}>{stats.totalStudents}</p>
+            </div>
+            <div style={{ padding: '15px', border: '1px solid #ccc', borderRadius: '8px', textAlign: 'center' }}>
+              <h3>Walimu</h3>
+              <p style={{ fontSize: '24px', fontWeight: 'bold' }}>{stats.totalTeachers}</p>
+            </div>
+            <div style={{ padding: '15px', border: '1px solid #ccc', borderRadius: '8px', textAlign: 'center' }}>
+              <h3>Ada Iliyokusanywa</h3>
+              <p style={{ fontSize: '24px', fontWeight: 'bold' }}>TZS {stats.totalFeeCollected.toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* STUDENTS TAB */}
+      {activeTab === 'students' && (
+        <div>
+          <h2>🎓 Student Management</h2>
+          <form onSubmit={handleAddStudent} style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+            <input placeholder="Jina la Mwanafunzi" value={studentForm.name} onChange={e => setStudentForm({...studentForm, name: e.target.value})} required />
+            <input placeholder="Roll No" value={studentForm.rollNo} onChange={e => setStudentForm({...studentForm, rollNo: e.target.value})} required />
+            <input placeholder="Darasa" value={studentForm.class} onChange={e => setStudentForm({...studentForm, class: e.target.value})} required />
+            <input placeholder="Section" value={studentForm.section} onChange={e => setStudentForm({...studentForm, section: e.target.value})} />
+            <button type="submit">Ongeza Mwanafunzi</button>
+          </form>
+          <ul>
+            {students.map(s => (
+              <li key={s.id}>{s.name} - Roll: {s.rollNo} | Class: {s.class} ({s.section})</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* TEACHERS TAB */}
+      {activeTab === 'teachers' && (
+        <div>
+          <h2>👨‍🏫 Teacher Management</h2>
+          <form onSubmit={handleAddTeacher} style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+            <input placeholder="Jina la Mwalimu" value={teacherForm.name} onChange={e => setTeacherForm({...teacherForm, name: e.target.value})} required />
+            <input placeholder="Somo" value={teacherForm.subject} onChange={e => setTeacherForm({...teacherForm, subject: e.target.value})} required />
+            <input placeholder="Elimu/Qualification" value={teacherForm.qualification} onChange={e => setTeacherForm({...teacherForm, qualification: e.target.value})} />
+            <button type="submit">Ongeza Mwalimu</button>
+          </form>
+          <ul>
+            {teachers.map(t => (
+              <li key={t.id}>{t.name} - Somo: {t.subject} ({t.qualification})</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* RESULTS TAB */}
+      {activeTab === 'results' && (
+        <div>
+          <h2>📝 Examination Results</h2>
+          <form onSubmit={handleAddResult} style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+            <input placeholder="Student ID" value={resultForm.studentId} onChange={e => setResultForm({...resultForm, studentId: e.target.value})} required />
+            <input placeholder="Somo" value={resultForm.subject} onChange={e => setResultForm({...resultForm, subject: e.target.value})} required />
+            <input placeholder="Alama (Marks)" type="number" value={resultForm.marks} onChange={e => setResultForm({...resultForm, marks: e.target.value})} required />
+            <button type="submit">Weka Matokeo</button>
+          </form>
+          <ul>
+            {results.map(r => (
+              <li key={r.id}>Student ID: {r.studentId} | Somo: {r.subject} | Marks: {r.marks} | <strong>Grade: {r.grade}</strong></li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* FEES TAB */}
+      {activeTab === 'fees' && (
+        <div>
+          <h2>💳 Fee Management</h2>
+          <form onSubmit={handleAddFee} style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+            <input placeholder="Student ID" value={feeForm.studentId} onChange={e => setFeeForm({...feeForm, studentId: e.target.value})} required />
+            <input placeholder="Jumla ya Ada" type="number" value={feeForm.totalAmount} onChange={e => setFeeForm({...feeForm, totalAmount: e.target.value})} required />
+            <input placeholder="Kiasi Kilicholipwa" type="number" value={feeForm.paidAmount} onChange={e => setFeeForm({...feeForm, paidAmount: e.target.value})} required />
+            <button type="submit">Weka Malipo</button>
+          </form>
+          <ul>
+            {fees.map(f => (
+              <li key={f.id}>Student ID: {f.studentId} | Paid: TZS {f.paidAmount} / {f.totalAmount} | <strong>Status: {f.status}</strong></li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
-
-export default App;
