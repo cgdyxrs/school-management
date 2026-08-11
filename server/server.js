@@ -15,6 +15,9 @@ const DB_FILE = path.join(__dirname, 'db.json');
 function readData() {
   if (!fs.existsSync(DB_FILE)) {
     const initialData = {
+      users: [
+        { username: 'admin', password: '123' } // AUNTENTICATION DATA
+      ],
       students: [{ id: 1, name: 'Baraka Ali', rollNo: '101', class: 'Form 1', section: 'A' }],
       teachers: [{ id: 1, name: 'Mwl. Juma', subject: 'Mathematics', qualification: 'B.Ed' }],
       results: [{ id: 1, studentId: 1, subject: 'Mathematics', marks: 85, grade: 'A' }],
@@ -29,6 +32,19 @@ function readData() {
 function saveData(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
+
+// LOGIN API
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+  const db = readData();
+  const user = (db.users || []).find(u => u.username === username && u.password === password);
+
+  if (user) {
+    res.json({ success: true, message: 'Login successful' });
+  } else {
+    res.status(401).json({ success: false, message: 'Taarifa za kuingia sio sahihi!' });
+  }
+});
 
 // API Routes
 app.get('/api/students', (req, res) => res.json(readData().students));
@@ -101,7 +117,6 @@ app.put('/api/teachers/:id', (req, res) => {
   } else res.status(404).send('Not found');
 });
 
-// Use Middleware instead of Wildcard Route (Inaondoa PathError kabisa)
 app.use((req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });

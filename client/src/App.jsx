@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  const [loginError, setLoginError] = useState('');
+
   const [activeTab, setActiveTab] = useState('students');
   const [students, setStudents] = useState([]);
   const [teachers, setTeachers] = useState([]);
@@ -18,11 +22,31 @@ export default function App() {
   const [editingTeacher, setEditingTeacher] = useState(null);
 
   useEffect(() => {
-    fetchStudents();
-    fetchTeachers();
-    fetchResults();
-    fetchFees();
-  }, []);
+    if (isLoggedIn) {
+      fetchStudents();
+      fetchTeachers();
+      fetchResults();
+      fetchFees();
+    }
+  }, [isLoggedIn]);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(loginForm)
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Taarifa si sahihi');
+      return res.json();
+    })
+    .then(() => {
+      setIsLoggedIn(true);
+      setLoginError('');
+    })
+    .catch(err => setLoginError(err.message));
+  };
 
   const fetchStudents = () => fetch('/api/students').then(r => r.json()).then(setStudents);
   const fetchTeachers = () => fetch('/api/teachers').then(r => r.json()).then(setTeachers);
@@ -88,9 +112,49 @@ export default function App() {
     return s ? s.name : `Student ID: ${id}`;
   };
 
+  // IF NOT LOGGED IN SHOW LOGIN SCREEN
+  if (!isLoggedIn) {
+    return (
+      <div style={{ fontFamily: 'sans-serif', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#121212', color: '#fff' }}>
+        <form onSubmit={handleLogin} style={{ padding: '30px', borderRadius: '10px', background: '#1e1e1e', width: '300px', textAlign: 'center', border: '1px solid #333' }}>
+          <h2>🔐 Ingia Mfomoni</h2>
+          {loginError && <p style={{ color: 'red', fontSize: '14px' }}>{loginError}</p>}
+          <div style={{ marginBottom: '15px' }}>
+            <input 
+              type="text" 
+              placeholder="Username" 
+              value={loginForm.username} 
+              onChange={e => setLoginForm({...loginForm, username: e.target.value})} 
+              style={{ width: '90%', padding: '10px', borderRadius: '5px', border: '1px solid #444', backgroundColor: '#222', color: '#fff' }}
+              required 
+            />
+          </div>
+          <div style={{ marginBottom: '15px' }}>
+            <input 
+              type="password" 
+              placeholder="Password" 
+              value={loginForm.password} 
+              onChange={e => setLoginForm({...loginForm, password: e.target.value})} 
+              style={{ width: '90%', padding: '10px', borderRadius: '5px', border: '1px solid #444', backgroundColor: '#222', color: '#fff' }}
+              required 
+            />
+          </div>
+          <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
+            Login
+          </button>
+          <p style={{ fontSize: '12px', color: '#aaa', marginTop: '15px' }}>Default: admin / 123</p>
+        </form>
+      </div>
+    );
+  }
+
+  // IF LOGGED IN SHOW DASHBOARD
   return (
     <div style={{ fontFamily: 'sans-serif', padding: '20px', maxWidth: '1000px', margin: 'auto' }}>
-      <h1>🚀 School Management System</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1>🚀 School Management System</h1>
+        <button onClick={() => setIsLoggedIn(false)} style={{ padding: '8px 12px', backgroundColor: '#dc3545', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Logout</button>
+      </div>
 
       {/* Navigation */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
