@@ -28,8 +28,8 @@ let fees = [
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'YOUR_EMAIL@gmail.com',
-    pass: process.env.EMAIL_PASS || 'YOUR_APP_PASSWORD'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -72,7 +72,7 @@ app.post('/api/send-otp', async (req, res) => {
   };
 
   try {
-    if (!process.env.EMAIL_USER) {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
       console.log(`\n[OTP DEBUG] OTP ya ${email} ni: ${otp}\n`);
       return res.json({ message: `OTP imetumwa! (Debug OTP: ${otp})` });
     }
