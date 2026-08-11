@@ -7,7 +7,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Njia sahihi ya kuelekeza kwenye client/dist
 const distPath = path.join(__dirname, '..', 'client', 'dist');
 app.use(express.static(distPath));
 
@@ -16,18 +15,10 @@ const DB_FILE = path.join(__dirname, 'db.json');
 function readData() {
   if (!fs.existsSync(DB_FILE)) {
     const initialData = {
-      students: [
-        { id: 1, name: 'Baraka Ali', rollNo: '101', class: 'Form 1', section: 'A' }
-      ],
-      teachers: [
-        { id: 1, name: 'Mwl. Juma', subject: 'Mathematics', qualification: 'B.Ed' }
-      ],
-      results: [
-        { id: 1, studentId: 1, subject: 'Mathematics', marks: 85, grade: 'A' }
-      ],
-      fees: [
-        { id: 1, studentId: 1, totalAmount: 500000, paidAmount: 300000, status: 'Partial' }
-      ]
+      students: [{ id: 1, name: 'Baraka Ali', rollNo: '101', class: 'Form 1', section: 'A' }],
+      teachers: [{ id: 1, name: 'Mwl. Juma', subject: 'Mathematics', qualification: 'B.Ed' }],
+      results: [{ id: 1, studentId: 1, subject: 'Mathematics', marks: 85, grade: 'A' }],
+      fees: [{ id: 1, studentId: 1, totalAmount: 500000, paidAmount: 300000, status: 'Partial' }]
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2));
     return initialData;
@@ -39,7 +30,6 @@ function saveData(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
-// API Routes
 app.get('/api/students', (req, res) => res.json(readData().students));
 app.get('/api/teachers', (req, res) => res.json(readData().teachers));
 app.get('/api/results', (req, res) => res.json(readData().results));
@@ -96,7 +86,7 @@ app.put('/api/students/:id', (req, res) => {
     db.students[index] = { ...db.students[index], ...req.body };
     saveData(db);
     res.json(db.students[index]);
-  } else res.status(404).send('Hajapatikana');
+  } else res.status(404).send('Not found');
 });
 
 app.put('/api/teachers/:id', (req, res) => {
@@ -107,11 +97,10 @@ app.put('/api/teachers/:id', (req, res) => {
     db.teachers[index] = { ...db.teachers[index], ...req.body };
     saveData(db);
     res.json(db.teachers[index]);
-  } else res.status(404).send('Hajapatikana');
+  } else res.status(404).send('Not found');
 });
 
-// Kuelekeza maombi yote yanayobaki kwenye index.html
-app.get('*', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
