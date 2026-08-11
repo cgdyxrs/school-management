@@ -2,9 +2,15 @@ import React, { useState, useEffect } from 'react';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
-  const [loginError, setLoginError] = useState('');
+  const [authMode, setAuthMode] = useState('login'); // 'login', 'register', 'reset'
 
+  // Auth Forms
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [authMsg, setAuthMsg] = useState({ text: '', type: '' });
+
+  // Dashboard States
   const [activeTab, setActiveTab] = useState('students');
   const [students, setStudents] = useState([]);
   const [teachers, setTeachers] = useState([]);
@@ -35,17 +41,50 @@ export default function App() {
     fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(loginForm)
+      body: JSON.stringify({ email, password })
     })
-    .then(res => {
-      if (!res.ok) throw new Error('Taarifa si sahihi');
-      return res.json();
-    })
-    .then(() => {
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login imefeli');
       setIsLoggedIn(true);
-      setLoginError('');
+      setAuthMsg({ text: '', type: '' });
     })
-    .catch(err => setLoginError(err.message));
+    .catch(err => setAuthMsg({ text: err.message, type: 'error' }));
+  };
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      return setAuthMsg({ text: 'Password zote mbili hazifanani!', type: 'error' });
+    }
+    fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Usajili umefeli');
+      setAuthMsg({ text: data.message, type: 'success' });
+      setTimeout(() => { setAuthMode('login'); setAuthMsg({ text: '', type: '' }); }, 1500);
+    })
+    .catch(err => setAuthMsg({ text: err.message, type: 'error' }));
+  };
+
+  const handleResetPassword = (e) => {
+    e.preventDefault();
+    fetch('/api/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, newPassword: password })
+    })
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Imefeli');
+      setAuthMsg({ text: data.message, type: 'success' });
+      setTimeout(() => { setAuthMode('login'); setAuthMsg({ text: '', type: '' }); }, 1500);
+    })
+    .catch(err => setAuthMsg({ text: err.message, type: 'error' }));
   };
 
   const fetchStudents = () => fetch('/api/students').then(r => r.json()).then(setStudents);
@@ -137,11 +176,41 @@ export default function App() {
             box-shadow: inset 0 0 15px #00f0ff, inset 0 0 30px #7000ff, inset 0 0 45px #ff007f;
             animation: edgeGlow 4s linear infinite;
           }
+          .input-field {
+            width: 90%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #1a1a1a;
+            color: #fff;
+            outline: none;
+          }
+          .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #00f0ff, #7000ff);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 10px;
+          }
+          .link-btn {
+            color: #00f0ff;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 13px;
+            background: none;
+            border: none;
+          }
         `}</style>
 
         <div className="edge-light-border"></div>
 
-        <form onSubmit={handleLogin} style={{
+        <div style={{
           padding: '30px',
           borderRadius: '15px',
           background: 'rgba(25, 25, 25, 0.9)',
@@ -151,60 +220,111 @@ export default function App() {
           boxShadow: '0 0 20px rgba(0, 240, 255, 0.2)',
           zIndex: 10
         }}>
-          <h2 style={{ marginBottom: '20px', letterSpacing: '1px' }}>🔐 Ingia Mfomoni</h2>
-          {loginError && <p style={{ color: '#ff4d4d', fontSize: '14px' }}>{loginError}</p>}
-          <div style={{ marginBottom: '15px' }}>
-            <input 
-              type="text" 
-              placeholder="Username" 
-              value={loginForm.username} 
-              onChange={e => setLoginForm({...loginForm, username: e.target.value})} 
-              style={{
-                width: '90%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid #333',
-                backgroundColor: '#1a1a1a',
-                color: '#fff',
-                outline: 'none'
-              }}
-              required 
-            />
-          </div>
-          <div style={{ marginBottom: '20px' }}>
-            <input 
-              type="password" 
-              placeholder="Password" 
-              value={loginForm.password} 
-              onChange={e => setLoginForm({...loginForm, password: e.target.value})} 
-              style={{
-                width: '90%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid #333',
-                backgroundColor: '#1a1a1a',
-                color: '#fff',
-                outline: 'none'
-              }}
-              required 
-            />
-          </div>
-          <button type="submit" style={{
-            width: '100%',
-            padding: '12px',
-            background: 'linear-gradient(45deg, #00f0ff, #7000ff)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            fontSize: '16px',
-            boxShadow: '0 0 10px rgba(0,240,255,0.4)'
-          }}>
-            Login
-          </button>
-          <p style={{ fontSize: '12px', color: '#888', marginTop: '15px' }}>Default: admin / 123</p>
-        </form>
+          {authMsg.text && (
+            <p style={{ color: authMsg.type === 'error' ? '#ff4d4d' : '#00ff88', fontSize: '14px' }}>
+              {authMsg.text}
+            </p>
+          )}
+
+          {authMode === 'login' && (
+            <form onSubmit={handleLogin}>
+              <h2 style={{ marginBottom: '20px' }}>🔐 Ingia Mfomoni</h2>
+              <input 
+                type="email" 
+                placeholder="Email address" 
+                value={email} 
+                onChange={e => setEmail(e.target.value)} 
+                className="input-field" 
+                required 
+              />
+              <input 
+                type="password" 
+                placeholder="Password" 
+                value={password} 
+                onChange={e => setPassword(e.target.value)} 
+                className="input-field" 
+                required 
+              />
+              <button type="submit" className="btn-primary">Login</button>
+              
+              <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'space-between' }}>
+                <button type="button" className="link-btn" onClick={() => { setAuthMode('reset'); setAuthMsg({text:'',type:''}); }}>
+                  Sijakumbuka Password?
+                </button>
+                <button type="button" className="link-btn" onClick={() => { setAuthMode('register'); setAuthMsg({text:'',type:''}); }}>
+                  Sajili Akaunti
+                </button>
+              </div>
+              <p style={{ fontSize: '11px', color: '#888', marginTop: '15px' }}>Default: admin@gmail.com / 123</p>
+            </form>
+          )}
+
+          {authMode === 'register' && (
+            <form onSubmit={handleRegister}>
+              <h2 style={{ marginBottom: '20px' }}>📝 Sajili Akaunti</h2>
+              <input 
+                type="email" 
+                placeholder="Email address" 
+                value={email} 
+                onChange={e => setEmail(e.target.value)} 
+                className="input-field" 
+                required 
+              />
+              <input 
+                type="password" 
+                placeholder="Password" 
+                value={password} 
+                onChange={e => setPassword(e.target.value)} 
+                className="input-field" 
+                required 
+              />
+              <input 
+                type="password" 
+                placeholder="Thibitisha Password" 
+                value={confirmPassword} 
+                onChange={e => setConfirmPassword(e.target.value)} 
+                className="input-field" 
+                required 
+              />
+              <button type="submit" className="btn-primary">Sajili Sasa</button>
+              
+              <div style={{ marginTop: '15px' }}>
+                <button type="button" className="link-btn" onClick={() => { setAuthMode('login'); setAuthMsg({text:'',type:''}); }}>
+                  Tayari una akaunti? Ingia
+                </button>
+              </div>
+            </form>
+          )}
+
+          {authMode === 'reset' && (
+            <form onSubmit={handleResetPassword}>
+              <h2 style={{ marginBottom: '20px' }}>🔑 Reset Password</h2>
+              <input 
+                type="email" 
+                placeholder="Email yako" 
+                value={email} 
+                onChange={e => setEmail(e.target.value)} 
+                className="input-field" 
+                required 
+              />
+              <input 
+                type="password" 
+                placeholder="Password Mpya" 
+                value={password} 
+                onChange={e => setPassword(e.target.value)} 
+                className="input-field" 
+                required 
+              />
+              <button type="submit" className="btn-primary">Badilisha Password</button>
+              
+              <div style={{ marginTop: '15px' }}>
+                <button type="button" className="link-btn" onClick={() => { setAuthMode('login'); setAuthMsg({text:'',type:''}); }}>
+                  Rudi kwenye Login
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     );
   }
