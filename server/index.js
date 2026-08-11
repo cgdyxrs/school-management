@@ -1,15 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// In-memory Database
+// Memory Databases
 let users = [
   { id: 1, email: 'admin@gmail.com', password: '123' }
 ];
+let otpStore = {}; // Inahifadhi OTP kwa muda: { 'user@email.com': '123456' }
+
 let students = [
   { id: 1, name: 'Juma Hassan', rollNo: '101', class: 'Form 1', section: 'A' }
 ];
@@ -22,6 +25,15 @@ let results = [
 let fees = [
   { id: 1, studentId: 1, totalAmount: 500000, paidAmount: 300000, status: 'Incomplete' }
 ];
+
+// Mfumo wa kutuma Email
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || 'YOUR_EMAIL@gmail.com',
+    pass: process.env.EMAIL_PASS || 'YOUR_APP_PASSWORD'
+  }
+});
 
 // AUTH API
 app.post('/api/register', (req, res) => {
@@ -45,14 +57,53 @@ app.post('/api/login', (req, res) => {
   }
 });
 
-app.post('/api/reset-password', (req, res) => {
-  const { email, newPassword } = req.body;
+// 1. TUMA OTP KWENYE EMAIL
+app.post('/api/send-otp', async (req, res) => {
+  const { email } = req.body;
   const user = users.find(u => u.email === email);
   if (!user) {
-    return res.status(404).json({ error: 'Email hii haijapatikana!' });
+    return res.status(404).json({ error: 'Email hii haijasajiliwa kwenye mfumo!' });
   }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  otpStore[email] = otp;
+
+  const mailOptions = {
+    from: '"School Management" <noreply@school.com>',
+    to: email,
+    subject: 'Kodi yako ya Verification (OTP) - Reset Password',
+    text: `Kodi yako ya kuhakiki ili kubadilisha password ni: ${otp}. Isimpe mtu yeyote.`
+  };
+
+  try {
+    if (!process.env.EMAIL_USER) {
+      console.log(`\n[OTP DEBUG] OTP ya ${email} ni: ${otp}\n`);
+      return res.json({ message: `OTP imetumwa kwenye email yako! (Debug OTP: ${otp})` });
+    }
+    await transporter.sendMail(mailOptions);
+    res.json({ message: 'OTP imetumwa kikamilifu kwenye email yako!' });
+  } catch (err) {
+    console.log(`[OTP DEBUG] OTP ya ${email} ni: ${otp}`);
+    res.json({ message: `OTP imetengenezwa! (Kama email haijafika tumia kodi hii: ${otp})` });
+  }
+});
+
+// 2. THIBITISHA OTP NA BADILISHA PASSWORD
+app.post('/api/reset-password-otp', (req, res) => {
+  const { email, otp, newPassword } = req.body;
+  
+  if (!otpStore[email] || otpStore[email] !== otp) {
+    return res.status(400).json({ error: 'OTP uliyoingiza si sahihi au imepita muda!' });
+  }
+
+  const user = users.find(u => u.email === email);
+  if (!user) {
+    return res.status(404).json({ error: 'Mtumiaji hajapatikana!' });
+  }
+
   user.password = newPassword;
-  res.json({ message: 'Password imebadilishwa kikamilifu!' });
+  delete otpStore[email];
+  res.json({ message: 'Password imebadilishwa kikamilifu! Unaweza kuingia sasa.' });
 });
 
 // STUDENTS API
@@ -110,7 +161,7 @@ app.post('/api/fees', (req, res) => {
   res.json(newFee);
 });
 
-// Serve frontend build files in production
+// Serve frontend
 app.use(express.static(path.join(__dirname, '../client/dist')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authMode, setAuthMode] = useState('login'); // 'login', 'register', 'reset'
+  const [authMode, setAuthMode] = useState('login');
+  const [otpSent, setOtpSent] = useState(false);
 
   // Auth Forms
   const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [authMsg, setAuthMsg] = useState({ text: '', type: '' });
@@ -71,18 +73,38 @@ export default function App() {
     .catch(err => setAuthMsg({ text: err.message, type: 'error' }));
   };
 
-  const handleResetPassword = (e) => {
+  const handleSendOtp = (e) => {
     e.preventDefault();
-    fetch('/api/reset-password', {
+    fetch('/api/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, newPassword: password })
+      body: JSON.stringify({ email })
+    })
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Imefeli kutuma OTP');
+      setOtpSent(true);
+      setAuthMsg({ text: data.message, type: 'success' });
+    })
+    .catch(err => setAuthMsg({ text: err.message, type: 'error' }));
+  };
+
+  const handleResetPasswordWithOtp = (e) => {
+    e.preventDefault();
+    fetch('/api/reset-password-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp, newPassword: password })
     })
     .then(async res => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Imefeli');
       setAuthMsg({ text: data.message, type: 'success' });
-      setTimeout(() => { setAuthMode('login'); setAuthMsg({ text: '', type: '' }); }, 1500);
+      setTimeout(() => { 
+        setAuthMode('login'); 
+        setOtpSent(false);
+        setAuthMsg({ text: '', type: '' }); 
+      }, 1500);
     })
     .catch(err => setAuthMsg({ text: err.message, type: 'error' }));
   };
@@ -221,7 +243,7 @@ export default function App() {
           zIndex: 10
         }}>
           {authMsg.text && (
-            <p style={{ color: authMsg.type === 'error' ? '#ff4d4d' : '#00ff88', fontSize: '14px' }}>
+            <p style={{ color: authMsg.type === 'error' ? '#ff4d4d' : '#00ff88', fontSize: '13px', wordBreak: 'break-word' }}>
               {authMsg.text}
             </p>
           )}
@@ -248,14 +270,13 @@ export default function App() {
               <button type="submit" className="btn-primary">Login</button>
               
               <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'space-between' }}>
-                <button type="button" className="link-btn" onClick={() => { setAuthMode('reset'); setAuthMsg({text:'',type:''}); }}>
+                <button type="button" className="link-btn" onClick={() => { setAuthMode('reset'); setOtpSent(false); setAuthMsg({text:'',type:''}); }}>
                   Sijakumbuka Password?
                 </button>
                 <button type="button" className="link-btn" onClick={() => { setAuthMode('register'); setAuthMsg({text:'',type:''}); }}>
                   Sajili Akaunti
                 </button>
               </div>
-              <p style={{ fontSize: '11px', color: '#888', marginTop: '15px' }}>Default: admin@gmail.com / 123</p>
             </form>
           )}
 
@@ -297,32 +318,49 @@ export default function App() {
           )}
 
           {authMode === 'reset' && (
-            <form onSubmit={handleResetPassword}>
+            <div>
               <h2 style={{ marginBottom: '20px' }}>🔑 Reset Password</h2>
-              <input 
-                type="email" 
-                placeholder="Email yako" 
-                value={email} 
-                onChange={e => setEmail(e.target.value)} 
-                className="input-field" 
-                required 
-              />
-              <input 
-                type="password" 
-                placeholder="Password Mpya" 
-                value={password} 
-                onChange={e => setPassword(e.target.value)} 
-                className="input-field" 
-                required 
-              />
-              <button type="submit" className="btn-primary">Badilisha Password</button>
               
+              {!otpSent ? (
+                <form onSubmit={handleSendOtp}>
+                  <input 
+                    type="email" 
+                    placeholder="Weka Email yako" 
+                    value={email} 
+                    onChange={e => setEmail(e.target.value)} 
+                    className="input-field" 
+                    required 
+                  />
+                  <button type="submit" className="btn-primary">Tuma OTP kwa Email</button>
+                </form>
+              ) : (
+                <form onSubmit={handleResetPasswordWithOtp}>
+                  <input 
+                    type="text" 
+                    placeholder="Ingiza OTP uliyotumiwa" 
+                    value={otp} 
+                    onChange={e => setOtp(e.target.value)} 
+                    className="input-field" 
+                    required 
+                  />
+                  <input 
+                    type="password" 
+                    placeholder="Password Mpya" 
+                    value={password} 
+                    onChange={e => setPassword(e.target.value)} 
+                    className="input-field" 
+                    required 
+                  />
+                  <button type="submit" className="btn-primary">Thibitisha & Badilisha</button>
+                </form>
+              )}
+
               <div style={{ marginTop: '15px' }}>
-                <button type="button" className="link-btn" onClick={() => { setAuthMode('login'); setAuthMsg({text:'',type:''}); }}>
+                <button type="button" className="link-btn" onClick={() => { setAuthMode('login'); setOtpSent(false); setAuthMsg({text:'',type:''}); }}>
                   Rudi kwenye Login
                 </button>
               </div>
-            </form>
+            </div>
           )}
         </div>
       </div>
