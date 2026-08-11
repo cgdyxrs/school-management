@@ -112,43 +112,103 @@ export default function App() {
     return s ? s.name : `Student ID: ${id}`;
   };
 
-  // IF NOT LOGGED IN SHOW LOGIN SCREEN
   if (!isLoggedIn) {
     return (
-      <div style={{ fontFamily: 'sans-serif', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#121212', color: '#fff' }}>
-        <form onSubmit={handleLogin} style={{ padding: '30px', borderRadius: '10px', background: '#1e1e1e', width: '300px', textAlign: 'center', border: '1px solid #333' }}>
-          <h2>🔐 Ingia Mfomoni</h2>
-          {loginError && <p style={{ color: 'red', fontSize: '14px' }}>{loginError}</p>}
+      <div style={{
+        fontFamily: 'sans-serif',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        backgroundColor: '#0d0d0d',
+        color: '#fff',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <style>{`
+          @keyframes edgeGlow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+          }
+          .edge-light-border {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            box-shadow: inset 0 0 15px #00f0ff, inset 0 0 30px #7000ff, inset 0 0 45px #ff007f;
+            animation: edgeGlow 4s linear infinite;
+          }
+        `}</style>
+
+        <div className="edge-light-border"></div>
+
+        <form onSubmit={handleLogin} style={{
+          padding: '30px',
+          borderRadius: '15px',
+          background: 'rgba(25, 25, 25, 0.9)',
+          width: '320px',
+          textAlign: 'center',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 0 20px rgba(0, 240, 255, 0.2)',
+          zIndex: 10
+        }}>
+          <h2 style={{ marginBottom: '20px', letterSpacing: '1px' }}>🔐 Ingia Mfomoni</h2>
+          {loginError && <p style={{ color: '#ff4d4d', fontSize: '14px' }}>{loginError}</p>}
           <div style={{ marginBottom: '15px' }}>
             <input 
               type="text" 
               placeholder="Username" 
               value={loginForm.username} 
               onChange={e => setLoginForm({...loginForm, username: e.target.value})} 
-              style={{ width: '90%', padding: '10px', borderRadius: '5px', border: '1px solid #444', backgroundColor: '#222', color: '#fff' }}
+              style={{
+                width: '90%',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid #333',
+                backgroundColor: '#1a1a1a',
+                color: '#fff',
+                outline: 'none'
+              }}
               required 
             />
           </div>
-          <div style={{ marginBottom: '15px' }}>
+          <div style={{ marginBottom: '20px' }}>
             <input 
               type="password" 
               placeholder="Password" 
               value={loginForm.password} 
               onChange={e => setLoginForm({...loginForm, password: e.target.value})} 
-              style={{ width: '90%', padding: '10px', borderRadius: '5px', border: '1px solid #444', backgroundColor: '#222', color: '#fff' }}
+              style={{
+                width: '90%',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid #333',
+                backgroundColor: '#1a1a1a',
+                color: '#fff',
+                outline: 'none'
+              }}
               required 
             />
           </div>
-          <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
+          <button type="submit" style={{
+            width: '100%',
+            padding: '12px',
+            background: 'linear-gradient(45deg, #00f0ff, #7000ff)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            boxShadow: '0 0 10px rgba(0,240,255,0.4)'
+          }}>
             Login
           </button>
-          <p style={{ fontSize: '12px', color: '#aaa', marginTop: '15px' }}>Default: admin / 123</p>
+          <p style={{ fontSize: '12px', color: '#888', marginTop: '15px' }}>Default: admin / 123</p>
         </form>
       </div>
     );
   }
 
-  // IF LOGGED IN SHOW DASHBOARD
   return (
     <div style={{ fontFamily: 'sans-serif', padding: '20px', maxWidth: '1000px', margin: 'auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -156,7 +216,6 @@ export default function App() {
         <button onClick={() => setIsLoggedIn(false)} style={{ padding: '8px 12px', backgroundColor: '#dc3545', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Logout</button>
       </div>
 
-      {/* Navigation */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
         {['students', 'teachers', 'results', 'fees'].map(tab => (
           <button 
@@ -174,7 +233,6 @@ export default function App() {
         ))}
       </div>
 
-      {/* STUDENTS TAB */}
       {activeTab === 'students' && (
         <div>
           <h2>🎓 Wanafunzi</h2>
@@ -212,7 +270,6 @@ export default function App() {
         </div>
       )}
 
-      {/* TEACHERS TAB */}
       {activeTab === 'teachers' && (
         <div>
           <h2>👨‍🏫 Walimu</h2>
@@ -248,7 +305,6 @@ export default function App() {
         </div>
       )}
 
-      {/* RESULTS TAB */}
       {activeTab === 'results' && (
         <div>
           <h2>📝 Matokeo ya Mitihani</h2>
@@ -275,7 +331,6 @@ export default function App() {
         </div>
       )}
 
-      {/* FEES TAB */}
       {activeTab === 'fees' && (
         <div>
           <h2>💳 Usimamizi wa Ada</h2>
