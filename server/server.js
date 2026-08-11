@@ -7,7 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const distPath = path.resolve(__dirname, '../client/dist');
+// Njia sahihi ya kuelekeza kwenye client/dist
+const distPath = path.join(__dirname, '..', 'client', 'dist');
 app.use(express.static(distPath));
 
 const DB_FILE = path.join(__dirname, 'db.json');
@@ -38,13 +39,12 @@ function saveData(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
-// --- GET ALL ---
+// API Routes
 app.get('/api/students', (req, res) => res.json(readData().students));
 app.get('/api/teachers', (req, res) => res.json(readData().teachers));
 app.get('/api/results', (req, res) => res.json(readData().results));
 app.get('/api/fees', (req, res) => res.json(readData().fees));
 
-// --- ADD (POST) ---
 app.post('/api/students', (req, res) => {
   const db = readData();
   const newStudent = { id: Date.now(), ...req.body };
@@ -88,7 +88,6 @@ app.post('/api/fees', (req, res) => {
   res.status(201).json(newFee);
 });
 
-// --- EDIT (PUT) ---
 app.put('/api/students/:id', (req, res) => {
   const db = readData();
   const id = parseInt(req.params.id);
@@ -97,7 +96,7 @@ app.put('/api/students/:id', (req, res) => {
     db.students[index] = { ...db.students[index], ...req.body };
     saveData(db);
     res.json(db.students[index]);
-  } else res.status(404).send('Not found');
+  } else res.status(404).send('Hajapatikana');
 });
 
 app.put('/api/teachers/:id', (req, res) => {
@@ -108,10 +107,10 @@ app.put('/api/teachers/:id', (req, res) => {
     db.teachers[index] = { ...db.teachers[index], ...req.body };
     saveData(db);
     res.json(db.teachers[index]);
-  } else res.status(404).send('Not found');
+  } else res.status(404).send('Hajapatikana');
 });
 
-// --- CATCH ALL FOR FRONTEND ---
+// Kuelekeza maombi yote yanayobaki kwenye index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
