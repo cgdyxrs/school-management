@@ -516,3 +516,6 @@ export default function App() {
     </div>
   );
 }
+<div className="powered-footer">Powered by ANDREA</div>
+<div className="powered-footer">Powered by ANDREA</div>
+

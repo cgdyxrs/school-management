@@ -1,132 +1,32 @@
 body {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  /* Picha ya pwani ya maji yanayocheza kwa nyuma */
-  background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
-  background-size: cover;
-  animation: wave-animation 15s ease-in-out infinite alternate;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: sans-serif;
-  overflow: hidden;
-  position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed !important;
+  background-size: cover !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  font-family: sans-serif !important;
+  overflow: hidden !important;
 }
 
-/* Animation ya maji kucheza hafifu nyuma */
-@keyframes wave-animation {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-}
-
-/* Boksi kuu la Login liwe kioo (Glass) safi bila rangi nyeusi kubwa nyuma yake */
 .login-box {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  padding: 40px;
-  border-radius: 25px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  width: 380px;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  padding: 40px !important;
+  border-radius: 25px !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  width: 380px !important;
+  text-align: center !important;
 }
 
-.login-title {
-  color: #fff;
-  font-size: 24px;
-  margin-bottom: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-.lock-icon {
-  color: #ffc107;
-  font-size: 22px;
-}
-
-.input-group {
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.input-group label {
-  display: block;
-  color: #f1f1f1;
-  margin-bottom: 5px;
-  font-size: 14px;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 10px;
-  color: #fff;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-.input-group input::placeholder {
-  color: #ddd;
-}
-
-.input-group input:focus {
-  outline: none;
-  border-color: #fff;
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* Kitufe cha Login kiwe safi bila rangi za kuwaka */
-.login-btn {
-  width: 100%;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  color: #fff;
-  border-radius: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  transition: background 0.3s ease;
-}
-
-.login-btn:hover {
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.extra-links {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-}
-
-.extra-links a {
-  color: #fff;
-  text-decoration: none;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-
-.extra-links a:hover {
-  text-decoration: underline;
-}
-
-/* Sehemu ya maandishi ya chini */
 .powered-footer {
-  position: absolute;
-  bottom: 20px;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  position: absolute !important;
+  bottom: 20px !important;
+  color: white !important;
+  font-size: 16px !important;
 }
