@@ -32,7 +32,7 @@ function App() {
 - Kutambua hitilafu zilizofichika chini ya sakafu au ukutani na kuzitengeneza kwa ustadi.`
     },
 
-    "Electrical Installation": {
+    "Home electrical Installation": {
       "Mwaka wa Kwanza": `ELECTRICAL INSTALLATION - MWAKA WA KWANZA:
 1. Sheria za Usalama wa Umeme (Electrical Safety):
 - Kanuni za kujikinga na shoti, matumizi ya PPE, na huduma ya kwanza kwa mtu aliyepigwa na umeme.
