@@ -3,40 +3,27 @@ body {
   padding: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #000;
+  background-color: #0b0b0b;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.login-box {
-  background: rgba(20, 20, 20, 0.85);
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-  width: 380px;
-  text-align: center;
-  border: 1px solid #333;
-  position: relative;
-  z-index: 1;
+  font-family: sans-serif;
   overflow: hidden;
 }
 
-.login-box::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(from 0deg, transparent, transparent, #00c9ff, transparent);
-  animation: box-rotate 6s linear infinite;
-  z-index: -1;
-  opacity: 0.7;
-}
-
-@keyframes box-rotate {
-  100% { transform: rotate(360deg); }
+/* Boksi kuu lenye muonekano wa Glass */
+.login-box {
+  background: rgba(15, 15, 15, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
+  width: 380px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
 }
 
 .login-title {
@@ -57,43 +44,69 @@ body {
 .input-group {
   margin-bottom: 20px;
   text-align: left;
+  position: relative;
 }
 
 .input-group label {
   display: block;
-  color: #aaa;
+  color: #ccc;
   margin-bottom: 5px;
   font-size: 14px;
 }
 
+/* Kibox cha Input chenye Animation ya mwanga kuzunguka */
 .input-group input {
   width: 100%;
   padding: 12px;
-  background: #222;
-  border: 1px solid #333;
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid transparent;
+  border-radius: 10px;
   color: #fff;
   font-size: 16px;
   box-sizing: border-box;
+  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), linear-gradient(90deg, #00c9ff, #92fe9d, #ffc107, #00c9ff);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  animation: border-anim 4s linear infinite;
+  background-size: 300% 300%;
+}
+
+@keyframes border-anim {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .input-group input:focus {
   outline: none;
-  border-color: #00c9ff;
 }
 
+/* Kitufe cha Login na Rangi zinazobadilika kutoka kushoto kwenda kulia */
 .login-btn {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(45deg, #00c9ff, #92fe9d);
-  color: #000;
+  background: linear-gradient(270deg, #00c9ff, #92fe9d, #ff512f, #dd2476);
+  background-size: 800% 800%;
+  color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 20px;
+  animation: gradient-anim 6s ease infinite;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes gradient-anim {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.login-btn:hover {
+  opacity: 0.95;
 }
 
 .extra-links {
@@ -105,4 +118,7 @@ body {
 .extra-links a {
   color: #00c9ff;
   text-decoration: none;
+}
+.extra-links a:hover {
+  text-decoration: underline;
 }
