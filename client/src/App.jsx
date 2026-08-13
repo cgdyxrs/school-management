@@ -6,7 +6,7 @@ function App() {
   const [sectionType, setSectionType] = useState(null); // "notes" au "exams"
   const [selectedYear, setSelectedYear] = useState(null);
 
-  // Hapa unaweza kubadilisha link za Google Drive (weka zenye /preview mwishoni)
+  // Weka link za Google Drive (hakikisha mwisho wake kuna /preview)
   const contentLinks = {
     "Pipe Fitting": {
       notes: {
@@ -48,7 +48,7 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* Maandishi ya chini kwenye mchanga (Meusi) */}
+      {/* Maandishi ya chini kwenye mchanga */}
       <div className="sand-watermark">by ANDREA</div>
 
       <div className="login-box wide-box">
@@ -84,7 +84,7 @@ function App() {
             <p className="subtitle">Ungependa kusoma nini?</p>
             <div className="course-list">
               <button className="course-btn main-action-btn" onClick={() => setSectionType("notes")}>
-                📚 Notisi za Masomo (Notes)
+                📚 Notisi za Masomo Yote (Notes)
               </button>
               <button className="course-btn main-action-btn" onClick={() => setSectionType("exams")}>
                 📝 Mitihani ya VETA (CBA Past Papers)
