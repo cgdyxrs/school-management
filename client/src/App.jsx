@@ -5,9 +5,20 @@ function App() {
   const [activeCourse, setActiveCourse] = useState(null);
 
   const courses = {
-    "Pipe Fitting": "Notisi za Pipe Fitting: Hapa utajifunza kuhusu aina za mabomba, upimaji, kukata, na kuunganisha mabomba ya maji na mifumo mbalimbali kwa usalama.",
-    "Electrical Installation": "Notisi za Electrical Installation: Hapa utajifunza usakinishaji wa nyaya za umeme, saketi, ufungaji wa swichi na taa, pamoja na sheria za usalama wa umeme.",
-    "Motor Vehicle Mechanics": "Notisi za Motor Vehicle Mechanics: Hapa utajifunza kuhusu mfumo wa injini, breki, mfumo wa mafuta, na matengenezo ya jumla ya vyombo vya moto."
+    "Pipe Fitting": `NOTISI ZA PIPE FITTING:
+1. Utangulizi: Ni fani inayohusika na upimaji, ukataji, uunganishaji na ufungaji wa mabomba ya maji, gesi, na majitaka.
+2. Vifaa Vikuu: Inajumuisha mabomba ya PVC, PPR, G.I (Galvanized Iron), wrench (spana za mabomba), na cutter.
+3. Usalama: Hakikisha unafunga valvu za maji kuu kabla ya kuanza ukarabati wowote kuepusha mafuriko.`,
+
+    "Electrical Installation": `NOTISI ZA ELECTRICAL INSTALLATION:
+1. Utangulizi: Inahusika na usakinishaji wa mifumo ya umeme ya majumbani na viwandani.
+2. Vipengele Vikuu: Nyaya za umeme (cables), swichi (switches), soketi (sockets), na vivunja mzunguko (circuit breakers/MCB).
+3. Usalama: Kamwe usifanye kazi kwenye nyaya zenye umeme (live wires); zima kuu (main switch) kwanza na utumie vifaa vya kujikinga (PPE).`,
+
+    "Motor Vehicle Mechanics": `NOTISI ZA MOTOR VEHICLE MECHANICS:
+1. Utangulizi: Inahusika na uchunguzi, utambuzi wa hitilafu, na matengenezo ya injini na mifumo ya magari.
+2. Mifumo Kuu: Injini (Engine), Mfumo wa Breki (Braking system), Mfumo wa Ubaridi (Cooling system), na Umeme wa Gari.
+3. Usalama: Tumia majeketi (jacks) imara wakati wa kuinua gari na vaa nguo za kazi zinazofaa.`
   };
 
   return (
@@ -16,7 +27,7 @@ function App() {
         {activeCourse ? (
           <div className="content-view">
             <h2 className="login-title">{activeCourse}</h2>
-            <p className="note-text">{courses[activeCourse]}</p>
+            <pre className="note-text">{courses[activeCourse]}</pre>
             <button className="back-btn" onClick={() => setActiveCourse(null)}>Rudi Nyuma</button>
           </div>
         ) : (
