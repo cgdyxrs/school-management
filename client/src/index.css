@@ -1,136 +1,49 @@
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body, html {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  font-family: sans-serif;
+  margin: 0; padding: 0; width: 100vw; height: 100vh;
+  overflow: hidden; font-family: sans-serif;
 }
 
-/* Eneo la nyuma linabaki na picha ya maji pekee bila vizuizi vyovyote */
-.app-container, div[class*="app"], main {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed !important;
-  background-size: cover !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  position: relative !important;
+.app-container {
+  width: 100vw; height: 100vh;
+  background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+  background-size: cover;
+  display: flex; justify-content: center; align-items: center;
 }
 
-/* Boksi la Login linakuwa kioo safi (Glassmorphism) */
 .login-box {
-  background: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  padding: 40px !important;
-  border-radius: 25px !important;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
-  width: 380px !important;
-  text-align: center !important;
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-  z-index: 10 !important;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  padding: 40px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  width: 350px;
+  text-align: center;
+  color: white;
 }
 
-.login-title {
-  color: #fff !important;
-  font-size: 24px !important;
-  margin-bottom: 25px !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 10px !important;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+.login-title { margin-bottom: 5px; }
+.subtitle { font-size: 14px; margin-bottom: 20px; color: #eee; }
+
+.course-list { display: flex; flex-direction: column; gap: 10px; }
+
+.course-btn {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.lock-icon {
-  color: #ffc107 !important;
-  font-size: 22px !important;
-}
+.course-btn:hover { background: rgba(255, 255, 255, 0.4); }
 
-.input-group {
-  margin-bottom: 20px !important;
-  text-align: left !important;
-}
+.extra-links { display: flex; justify-content: space-between; margin-top: 20px; font-size: 12px; }
+.extra-links a { color: white; text-decoration: none; }
 
-.input-group label {
-  display: block !important;
-  color: #f1f1f1 !important;
-  margin-bottom: 5px !important;
-  font-size: 14px !important;
-}
-
-.input-group input {
-  width: 100% !important;
-  padding: 12px !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-  border-radius: 10px !important;
-  color: #fff !important;
-  font-size: 16px !important;
-}
-
-.input-group input::placeholder {
-  color: #ddd !important;
-}
-
-.input-group input:focus {
-  outline: none !important;
-  border-color: #fff !important;
-  background: rgba(255, 255, 255, 0.3) !important;
-}
-
-.login-btn {
-  width: 100% !important;
-  padding: 12px !important;
-  background: rgba(255, 255, 255, 0.3) !important;
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
-  color: #fff !important;
-  border-radius: 10px !important;
-  font-size: 18px !important;
-  font-weight: bold !important;
-  cursor: pointer !important;
-  margin-top: 10px !important;
-  margin-bottom: 20px !important;
-}
-
-.login-btn:hover {
-  background: rgba(255, 255, 255, 0.5) !important;
-}
-
-.extra-links {
-  display: flex !important;
-  justify-content: space-between !important;
-  font-size: 14px !important;
-}
-
-.extra-links a {
-  color: #fff !important;
-  text-decoration: none !important;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
-}
-
-.extra-links a:hover {
-  text-decoration: underline !important;
-}
-
-/* Sehemu ya footer chini kabisa */
 .powered-footer {
-  position: absolute !important;
-  bottom: 15px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  letter-spacing: 1px !important;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.6) !important;
-  z-index: 10 !important;
+  position: absolute; bottom: 20px; color: white; font-weight: bold;
 }
