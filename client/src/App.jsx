@@ -9,14 +9,9 @@ function App() {
         <p className="subtitle">Chagua Fani ya Kujisomea</p>
         
         <div className="course-list">
-          <button className="course-btn">PPF (Protection & Planning)</button>
+          <button className="course-btn">Pipe Fitting</button>
           <button className="course-btn">Electrical Installation</button>
           <button className="course-btn">Motor Vehicle Mechanics</button>
-        </div>
-
-        <div className="extra-links">
-          <a href="#">Login Mwanafunzi</a>
-          <a href="#">Sajili Akaunti</a>
         </div>
       </div>
       
