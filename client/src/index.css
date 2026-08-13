@@ -17,21 +17,21 @@ body, html {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  padding: 40px;
+  padding: 30px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  width: 380px;
+  width: 400px;
   text-align: center;
   color: white;
 }
 
 .login-title { margin-bottom: 5px; font-size: 24px; }
-.subtitle { font-size: 14px; margin-bottom: 25px; color: #eee; }
+.subtitle { font-size: 14px; margin-bottom: 20px; color: #eee; }
 
-.course-list { display: flex; flex-direction: column; gap: 15px; }
+.course-list { display: flex; flex-direction: column; gap: 12px; }
 
 .course-btn {
-  padding: 15px;
+  padding: 14px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.25);
@@ -45,10 +45,23 @@ body, html {
 .course-btn:hover { background: rgba(255, 255, 255, 0.5); }
 
 .content-view { text-align: center; }
-.note-text { color: #fff; font-size: 15px; margin: 20px 0; line-height: 1.6; text-align: left; }
+
+.note-text { 
+  color: #fff; 
+  font-size: 13px; 
+  margin: 15px 0; 
+  line-height: 1.5; 
+  text-align: left; 
+  white-space: pre-wrap; 
+  max-height: 260px; 
+  overflow-y: auto; 
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 8px;
+}
 
 .back-btn {
-  margin-top: 15px;
+  margin-top: 10px;
   padding: 10px 20px;
   background: rgba(255, 255, 255, 0.3);
   border: 1px solid white;
