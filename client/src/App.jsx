@@ -250,7 +250,7 @@ export default function App() {
 
           {authMode === 'login' && (
             <form onSubmit={handleLogin}>
-              <h2 style={{ marginBottom: '20px' }}>🔐 Ingia Mfomoni</h2>
+              <h2 style={{ marginBottom: '20px' }}>🔐 Welcome</h2>
               <input 
                 type="email" 
                 placeholder="Email address" 
