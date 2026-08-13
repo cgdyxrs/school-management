@@ -10,6 +10,7 @@ body, html {
   background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
   background-size: cover;
   display: flex; justify-content: center; align-items: center;
+  position: relative;
 }
 
 .login-box {
@@ -19,12 +20,12 @@ body, html {
   padding: 40px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  width: 350px;
+  width: 380px;
   text-align: center;
   color: white;
 }
 
-.login-title { margin-bottom: 5px; }
+.login-title { margin-bottom: 5px; font-size: 24px; }
 .subtitle { font-size: 14px; margin-bottom: 25px; color: #eee; }
 
 .course-list { display: flex; flex-direction: column; gap: 15px; }
@@ -36,13 +37,29 @@ body, html {
   background: rgba(255, 255, 255, 0.25);
   color: white;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .course-btn:hover { background: rgba(255, 255, 255, 0.5); }
 
+.content-view { text-align: center; }
+.note-text { color: #fff; font-size: 15px; margin: 20px 0; line-height: 1.6; text-align: left; }
+
+.back-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid white;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.back-btn:hover { background: rgba(255, 255, 255, 0.5); }
+
 .powered-footer {
-  position: absolute; bottom: 20px; color: white; font-weight: bold;
+  position: absolute; bottom: 20px; color: white; font-weight: bold; font-size: 14px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
