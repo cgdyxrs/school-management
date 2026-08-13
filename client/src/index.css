@@ -3,40 +3,41 @@ body {
   padding: 0;
   width: 100vw;
   height: 100vh;
-  /* Hapa tunatumia picha ya maji kwa nyuma na kuifanya itembee (moving background) */
+  /* Picha ya pwani ya maji yanayocheza kwa nyuma */
   background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
   background-size: cover;
-  animation: water-move 20s ease-in-out infinite alternate;
+  animation: wave-animation 15s ease-in-out infinite alternate;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   font-family: sans-serif;
   overflow: hidden;
+  position: relative;
 }
 
-@keyframes water-move {
+/* Animation ya maji kucheza hafifu nyuma */
+@keyframes wave-animation {
   0% { background-position: 0% 50%; }
   100% { background-position: 100% 50%; }
 }
 
-/* Boksi lenye muonekano wa Glass kama ulivyoomba */
+/* Boksi kuu la Login liwe kioo (Glass) safi bila rangi nyeusi kubwa nyuma yake */
 .login-box {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   padding: 40px;
-  border-radius: 30px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border-radius: 25px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
   width: 380px;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  position: relative;
-  z-index: 1;
 }
 
 .login-title {
   color: #fff;
-  font-size: 26px;
+  font-size: 24px;
   margin-bottom: 25px;
   display: flex;
   justify-content: center;
@@ -47,7 +48,7 @@ body {
 
 .lock-icon {
   color: #ffc107;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .input-group {
@@ -60,7 +61,6 @@ body {
   color: #f1f1f1;
   margin-bottom: 5px;
   font-size: 14px;
-  font-weight: 500;
 }
 
 .input-group input {
@@ -68,7 +68,7 @@ body {
   padding: 12px;
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
+  border-radius: 10px;
   color: #fff;
   font-size: 16px;
   box-sizing: border-box;
@@ -84,19 +84,20 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
+/* Kitufe cha Login kiwe safi bila rangi za kuwaka */
 .login-btn {
   width: 100%;
   padding: 12px;
   background: rgba(255, 255, 255, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.5);
   color: #fff;
-  border-radius: 12px;
+  border-radius: 10px;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 20px;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .login-btn:hover {
@@ -117,4 +118,15 @@ body {
 
 .extra-links a:hover {
   text-decoration: underline;
+}
+
+/* Sehemu ya maandishi ya chini */
+.powered-footer {
+  position: absolute;
+  bottom: 20px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
