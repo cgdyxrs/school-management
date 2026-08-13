@@ -48,6 +48,12 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Video ya Animation inayocheza kwa nyuma (Background Video) */}
+      <video autoPlay muted loop className="bg-video">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-sea-waves-in-the-sun-4198-large.mp4" type="video/mp4" />
+        Kivinjari chako hakitumii video ya nyuma.
+      </video>
+
       {/* Maandishi ya chini kwenye mchanga */}
       <div className="sand-watermark">by ANDREA</div>
 
@@ -84,7 +90,7 @@ function App() {
             <p className="subtitle">Ungependa kusoma nini?</p>
             <div className="course-list">
               <button className="course-btn main-action-btn" onClick={() => setSectionType("notes")}>
-                📚 Notisi za Masomo Yote (Notes)
+                📚 Notisi za Masomo (Notes)
               </button>
               <button className="course-btn main-action-btn" onClick={() => setSectionType("exams")}>
                 📝 Mitihani ya VETA (CBA Past Papers)
